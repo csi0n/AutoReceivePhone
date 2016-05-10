@@ -1,11 +1,14 @@
 package com.csi0n.autoreceivephone.utils;
 
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.csi0n.autoreceivephone.App;
 import com.csi0n.autoreceivephone.Constants;
 import com.csi0n.autoreceivephone.database.dao.DaoMaster;
 import com.csi0n.autoreceivephone.database.dao.DaoSession;
+import com.csi0n.autoreceivephone.database.dao.PhoneAllow;
+import com.csi0n.autoreceivephone.database.dao.PhoneAllowDao;
 import com.csi0n.autoreceivephone.database.dao.PhoneData;
 import com.csi0n.autoreceivephone.database.dao.PhoneDataDao;
 
@@ -52,16 +55,56 @@ public class DbManager {
     public static void insertPhone(PhoneData phoneData){
         getDaoSession().getPhoneDataDao().insert(phoneData);
     }
+
     public static List<PhoneData> getPhoneData(){
-        Query query=getDaoSession().getPhoneDataDao().queryBuilder()
+        return getDaoSession().getPhoneDataDao().queryBuilder()
+                .orderDesc(PhoneDataDao.Properties.Time)
+                .build()
+                .list();
+    }
+    public static boolean insertPhoneAllow(PhoneAllow phoneAllow) {
+        try {
+            getDaoSession().getPhoneAllowDao().insert(phoneAllow);
+            return true;
+        } catch (SQLiteConstraintException sqLiteConstraintException) {
+            return false;
+        }
+    }
+
+    public static List<PhoneAllow> getPhoneAllowData() {
+        return getDaoSession().getPhoneAllowDao().queryBuilder()
+                .orderDesc(PhoneAllowDao.Properties.Time)
+                .build()
+                .list();
+    }
+
+    public static boolean findPhoneInAllow(String phoneNumber) {
+        Query query = getDaoSession().getPhoneAllowDao().queryBuilder()
+                .where(PhoneAllowDao.Properties.PhoneNumber.eq(phoneNumber))
                 .build();
-        QueryBuilder.LOG_SQL=true;
-        QueryBuilder.LOG_VALUES=true;
-        return query.list();
+        if (query.list().size() != 0)
+            return true;
+        else
+            return false;
+    }
+
+    public static void clearPhoneData() {
+        QueryBuilder<PhoneData> qb = getDaoSession().getPhoneDataDao().queryBuilder();
+        DeleteQuery<PhoneData> bd = qb.where(PhoneDataDao.Properties.Time.isNotNull()).buildDelete();
+        bd.executeDeleteWithoutDetachingEntities();
+    }
+
+    public static void clearPhoneAllow() {
+        QueryBuilder<PhoneAllow> qb1 = getDaoSession().getPhoneAllowDao().queryBuilder();
+        DeleteQuery<PhoneAllow> bd1 = qb1.where(PhoneAllowDao.Properties.Time.isNotNull()).buildDelete();
+        bd1.executeDeleteWithoutDetachingEntities();
     }
     public static void clearAll(){
         QueryBuilder<PhoneData> qb = getDaoSession().getPhoneDataDao().queryBuilder();
         DeleteQuery<PhoneData> bd = qb.where(PhoneDataDao.Properties.Time.isNotNull()).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
+        QueryBuilder<PhoneAllow> qb1 = getDaoSession().getPhoneAllowDao().queryBuilder();
+        DeleteQuery<PhoneAllow> bd1 = qb1.where(PhoneAllowDao.Properties.Time.isNotNull()).buildDelete();
+        bd1.executeDeleteWithoutDetachingEntities();
     }
 }

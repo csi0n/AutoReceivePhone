@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.csi0n.autoreceivephone.R;
 import com.csi0n.autoreceivephone.database.dao.PhoneData;
+import com.csi0n.autoreceivephone.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,17 +48,20 @@ public class PhoneDataAdapter extends BaseAdapter {
         ViewHolder holder;
         if (view == null) {
             view = View.inflate(mContext, R.layout.view_adapter_phone_data_item, null);
-            holder=new ViewHolder(view);
+            holder = new ViewHolder(view);
             view.setTag(holder);
-        }else
-        holder=(ViewHolder)view.getTag();
+        } else
+            holder = (ViewHolder) view.getTag();
         holder.tvPhone.setText(getItem(i).getPhoneNumber());
+        holder.tvTime.setText(TimeUtils.getTimeByCurrentTimeMillis(getItem(i).getTime().getTime()));
         return view;
     }
 
     static class ViewHolder {
         @Bind(R.id.tv_phone)
         TextView tvPhone;
+        @Bind(R.id.tv_time)
+        TextView tvTime;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

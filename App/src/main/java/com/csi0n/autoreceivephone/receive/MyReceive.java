@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 import com.csi0n.autoreceivephone.database.dao.PhoneData;
@@ -27,15 +29,21 @@ public class MyReceive extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action=intent.getAction();
         if (action.equals(B_PHONE_STATE)){
-            String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
             int state = telephony.getCallState();
             switch (state){
                 case TelephonyManager.CALL_STATE_IDLE:
-                    doReceiver(context);
-                    PhoneData phoneData=new PhoneData(phoneNumber,new Date(System.currentTimeMillis()));
-                    DbManager.insertPhone(phoneData);
-                    EventBus.getDefault().post(new PhoneListUpdateEvent(phoneData));
+                    String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                    if (!TextUtils.isEmpty(phoneNumber)){
+                        if (DbManager.findPhoneInAllow(phoneNumber)){
+                            doReceiver(context);
+                            PhoneData phoneData=new PhoneData(phoneNumber,new Date(System.currentTimeMillis()));
+                            DbManager.insertPhone(phoneData);
+                            EventBus.getDefault().post(new PhoneListUpdateEvent(phoneData));
+                        }else {
+                            Toast.makeText(context, "此号码没有在拦截库中", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                     break;
                 default:
                     break;
