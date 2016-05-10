@@ -1,10 +1,8 @@
 package com.csi0n.autoreceivephone;
 
 import android.content.IntentFilter;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -17,11 +15,9 @@ import com.csi0n.autoreceivephone.utils.DbManager;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
@@ -30,7 +26,7 @@ public class MainActivity extends BaseActivity {
     @Bind(value = R.id.mlist)
     ListView mList;
 
-    @OnClick(value = {R.id.button})
+    @OnClick(value = {R.id.button,R.id.clean_his})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.button:
@@ -41,6 +37,11 @@ public class MainActivity extends BaseActivity {
                     button.setText(REG);
                     unregisterThis();
                 }
+                break;
+            case R.id.clean_his:
+                DbManager.clearAll();
+                adapter.datas.clear();
+                adapter.notifyDataSetChanged();
                 break;
             default:
                 break;
@@ -60,6 +61,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         button.setText(UNREG);
         registerThis();
         adapter=new PhoneDataAdapter(this);
@@ -91,9 +93,8 @@ public class MainActivity extends BaseActivity {
     }
     @Subscribe
     public void onEvent(PhoneListUpdateEvent phoneListUpdateEvent){
-        List<PhoneData> tempDatas= DbManager.getPhoneData();
-        if (tempDatas!=null)
-            mList.setAdapter(adapter);
+        adapter.datas.add(phoneListUpdateEvent.phoneData);
         adapter.notifyDataSetChanged();
     }
+
 }

@@ -11,6 +11,7 @@ import com.csi0n.autoreceivephone.database.dao.PhoneDataDao;
 
 import java.util.List;
 
+import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.Query;
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -57,5 +58,10 @@ public class DbManager {
         QueryBuilder.LOG_SQL=true;
         QueryBuilder.LOG_VALUES=true;
         return query.list();
+    }
+    public static void clearAll(){
+        QueryBuilder<PhoneData> qb = getDaoSession().getPhoneDataDao().queryBuilder();
+        DeleteQuery<PhoneData> bd = qb.where(PhoneDataDao.Properties.Time.isNotNull()).buildDelete();
+        bd.executeDeleteWithoutDetachingEntities();
     }
 }

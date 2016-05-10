@@ -7,14 +7,11 @@ import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
-import com.csi0n.autoreceivephone.App;
 import com.csi0n.autoreceivephone.database.dao.PhoneData;
 import com.csi0n.autoreceivephone.event.PhoneListUpdateEvent;
 import com.csi0n.autoreceivephone.utils.DbManager;
-import com.csi0n.autoreceivephone.utils.SystemUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,23 +31,19 @@ public class MyReceive extends BroadcastReceiver {
             TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
             int state = telephony.getCallState();
             switch (state){
-                case TelephonyManager.CALL_STATE_RINGING:
-                    doReceiver(context);
-                    break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
-                    PhoneData phone=new PhoneData(phoneNumber,new Date(System.currentTimeMillis()));
-                    DbManager.insertPhone(phone);
-                    EventBus.getDefault().post(new PhoneListUpdateEvent(phone));
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-
+                    doReceiver(context);
+                    PhoneData phoneData=new PhoneData(phoneNumber,new Date(System.currentTimeMillis()));
+                    DbManager.insertPhone(phoneData);
+                    EventBus.getDefault().post(new PhoneListUpdateEvent(phoneData));
                     break;
                 default:
+                    break;
             }
         }
     }
-    void doReceiver(Context mContext){
+
+    void doReceiver(Context mContext) {
         try {
             Method method = Class.forName("android.os.ServiceManager").getMethod("getService", String.class);
             IBinder binder = (IBinder) method.invoke(null, new Object[]{"phone"});
@@ -60,23 +53,21 @@ public class MyReceive extends BroadcastReceiver {
             Log.d("Sandy", "", e);
         } catch (ClassNotFoundException e) {
             Log.d("Sandy", "", e);
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.d("Sandy", "", e);
-            try{
+            try {
                 Log.e("Sandy", "for version 4.1 or larger");
                 Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
                 KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
-                intent.putExtra("android.intent.extra.KEY_EVENT",keyEvent);
-                mContext.sendOrderedBroadcast(intent,"android.permission.CALL_PRIVILEGED");
+                intent.putExtra("android.intent.extra.KEY_EVENT", keyEvent);
+                mContext.sendOrderedBroadcast(intent, "android.permission.CALL_PRIVILEGED");
             } catch (Exception e2) {
                 Log.d("Sandy", "", e2);
                 Intent meidaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
                 KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK);
-                meidaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT,keyEvent);
+                meidaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, keyEvent);
                 mContext.sendOrderedBroadcast(meidaButtonIntent, null);
             }
-        }finally {
-            SystemUtils.restartApplication(App.getInstance());
         }
     }
 }
