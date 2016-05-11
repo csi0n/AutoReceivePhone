@@ -10,20 +10,18 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="110"
         android:textColor="@android:color/black"
-        android:id="@+id/tv_phone" />
+        android:id="@+id/tv_phone"
+        android:textSize="@dimen/abc_text_size_medium_material" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text=""
-        android:id="@+id/tv_time"
         android:textColor="@android:color/darker_gray"
-        android:layout_gravity="right"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
+        android:id="@+id/tv_time"
+        android:textSize="@dimen/abc_text_size_small_material"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginRight="8dp" />
 </RelativeLayout>
