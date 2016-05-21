@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:minHeight="50dp"
     android:gravity="center_vertical"
     android:layout_height="50dp">
-    <TextView
-        android:layout_marginLeft="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="110"
-        android:textColor="@android:color/black"
-        android:id="@+id/tv_phone"
-        android:textSize="@dimen/abc_text_size_medium_material" />
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+      <TextView
+          android:layout_marginLeft="8dp"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:textAppearance="?android:attr/textAppearanceSmall"
+          android:text="110"
+          android:textColor="@android:color/black"
+          android:id="@+id/tv_phone"
+          android:textSize="@dimen/abc_text_size_medium_material" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/tv_time"
-        android:textColor="@android:color/darker_gray"
-        android:layout_gravity="center_vertical"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/abc_text_size_small_material" />
-</RelativeLayout>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:textAppearance="?android:attr/textAppearanceSmall"
+          android:id="@+id/tv_time"
+          android:textColor="@android:color/darker_gray"
+          android:layout_gravity="center_vertical"
+          android:layout_centerVertical="true"
+          android:layout_marginRight="8dp"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          android:textSize="@dimen/abc_text_size_small_material"
+          android:gravity="center" />
+  </RelativeLayout>
+</LinearLayout>

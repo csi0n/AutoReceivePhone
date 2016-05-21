@@ -2,7 +2,9 @@ package com.csi0n.autoreceivephone;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,6 +35,8 @@ public class AllowListActivity extends BaseActivity {
         setContentView(R.layout.aty_allow_list);
     }
     private void init() {
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         adapter = new PhoneAllowAdapter(this);
         List<PhoneAllow> phoneAllows = DbManager.getPhoneAllowData();
         if (phoneAllows != null)
@@ -61,6 +65,16 @@ public class AllowListActivity extends BaseActivity {
                 }else {
                     Toast.makeText(AllowListActivity.this, "号码已经存在", Toast.LENGTH_SHORT).show();
                 }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                default:
+                    return super.onOptionsItemSelected(item);
         }
     }
 }

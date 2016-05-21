@@ -54,7 +54,7 @@ public class PhoneAllowAdapter extends BaseAdapter {
             holder=(ViewHolder)convertView.getTag();
         }
             holder.tvPhone.setText(getItem(position).getPhoneNumber());
-            holder.tvTime.setText(TimeUtils.getTimeByCurrentTimeMillis(getItem(position).getTime().getTime()));
+            holder.tvTime.setText(TimeUtils.getTimeElapse(getItem(position).getTime().getTime()));
         return convertView;
     }
 
